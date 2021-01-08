@@ -1,7 +1,7 @@
 const https = require('axios');
 
 https({
-    method: 'get',
+    method: 'post',
     url: 'http://localhost:8080/',
     headers: {
         'Content-Type': 'application/json',

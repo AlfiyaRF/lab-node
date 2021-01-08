@@ -1,34 +1,16 @@
-const http = require('http');
+const https = require('axios');
 
-const body = JSON.stringify({
-    title: 'title',
-});
-
-const options = {
-    hostname: 'localhost',
-    port: '8080',
-    path: '/',
-    method: 'POST',
-    body: body,
+https({
+    method: 'post',
+    url: 'http://localhost:8080/',
     headers: {
-      'Content-Type': 'application/json',
-      'WhatWillSaveTheWorld': 'Love',
-    }
-};
-
-const request = http.request(options, response => {
-  let data = '';
-
-  response.on('data', d => {
-    data += d
-  })
-  response.on('end', () => {
-    console.log(data)
-  })
+        'Content-Type': 'application/json',
+        'WhatWillSaveTheWorld': 'Love',
+    },
+})
+.then(res => {
+    console.log(res.data)
+})
+.catch(err => {
+    console.log('error >>>> ', err)
 });
-
-request.on('error', error => {
-  console.error(error)
-});
-
-request.end(body);

@@ -1,0 +1,23 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "requestGet.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlfiyaRF/lab-node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlfiyaRF/lab-node/issues"
+  },
+  "homepage": "https://github.com/AlfiyaRF/lab-node#readme",
+  "dependencies": {
+    "axios": "0.21.1"
+  }
+}
