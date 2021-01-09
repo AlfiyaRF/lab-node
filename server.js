@@ -1,31 +1,34 @@
 const http = require('http');
 const fs = require('fs');
 const url = require('url');
-const port = 8080;
-const dbName = 'names.json';
 
-let names = [];
-if (fs.existsSync(dbName)) {
-    names = JSON.parse(fs.readFileSync(dbName, 'utf8'));
-    console.log('>>> names read from file: ', names);
+const port = 8080;
+const dbInfo = 'info.json';
+
+let info = [];
+if (fs.existsSync(dbInfo)) {
+    info = JSON.parse(fs.readFileSync(dbInfo, 'utf8'));
+    console.log('>>> information read from file: ', info);
 }
 
 const requestHandler = (request, response) => {
     const queryObject = url.parse(request.url, true).query;
+    const ip = request.connection.remoteAddress;
+
     console.log(request.method);
     if (
         request.method === 'POST' &&
         queryObject.name &&
         request.headers.iknowyoursecret === 'TheOwlsAreNotWhatTheySeem'
     ) {
-        names.push(queryObject.name);
-        fs.writeFile(dbName, JSON.stringify(names), (err) => {
+        info.push({name: queryObject.name, ip});
+        fs.writeFile(dbInfo, JSON.stringify(info), (err) => {
             if (err) {
                 throw err;
             }
         });
         console.log('I know your secret! -', request.headers.iknowyoursecret);
-        response.end(`Hello, ${names.join(', ')}!`);
+        response.end(`Hello, ${(info.map(item => item.name).join(', '))}!`);
     }
     if (
         request.method === 'POST' &&
