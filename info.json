@@ -1,1 +1,13 @@
-[{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"},{"name":"Name","ip":"::ffff:127.0.0.1"}]
+[{
+  "name": "Boris",
+  "password": "123",
+  "token": "token123"
+},{
+  "name":"Ivan",
+  "password":"456",
+  "token": "token456"
+},{
+  "name":"Vlad",
+  "password":"789",
+  "token": "token789"
+}]

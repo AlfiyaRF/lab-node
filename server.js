@@ -1,49 +1,71 @@
-const http = require('http');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
 const fs = require('fs');
-const url = require('url');
-
-const port = 8080;
 const dbInfo = 'info.json';
+let token = '';
 
-let info = [];
-if (fs.existsSync(dbInfo)) {
-    info = JSON.parse(fs.readFileSync(dbInfo, 'utf8'));
-    console.log('>>> information read from file: ', info);
-}
+app.use(bodyParser.json());
 
-const requestHandler = (request, response) => {
-    const queryObject = url.parse(request.url, true).query;
-    const ip = request.connection.remoteAddress;
-
-    console.log(request.method);
-    if (
-        request.method === 'POST' &&
-        queryObject.name &&
-        request.headers.iknowyoursecret === 'TheOwlsAreNotWhatTheySeem'
-    ) {
-        info.push({name: queryObject.name, ip});
-        fs.writeFile(dbInfo, JSON.stringify(info), (err) => {
-            if (err) {
-                throw err;
-            }
-        });
-        console.log('I know your secret! -', request.headers.iknowyoursecret);
-        response.end(`Hello, ${(info.map(item => item.name).join(', '))}!`);
+app.use((request, response, next) => {
+    if (request.method === 'GET') {
+        console.log('I don\'t work with GET method');
+        response.end('Try another method');
     }
-    if (
-        request.method === 'POST' &&
-        request.headers.whatwillsavetheworld
-    ) {
-        console.log('What will save the world? -', request.headers.whatwillsavetheworld);
-    }
-    response.end();
-};
-
-const server = http.createServer(requestHandler);
-
-server.listen(port, (error) => {
-    if (error) {
-        return console.log('The exeption is happened: ', error);
-    }
-    console.log(`Server is listening on ${port}`);
+    next();
 });
+
+app.post('/', (request, response, next) => {
+    console.log('I don\'t know you, please authenticate');
+    response.end('You need to authenticate');
+});
+
+app.post('/tokens', (request, response, next) => {
+    token = '';
+    if (request.body.name && request.body.password) {
+        console.log('I will ask the DB does it know you');
+        if (fs.existsSync(dbInfo)) {
+            const info = JSON.parse(fs.readFileSync(dbInfo, 'utf8'));
+            const userGood = (info) => {
+                for (let i = 0; i < info.length; i++) {
+                    if (
+                        info[i].name === request.body.name &&
+                        info[i].password === request.body.password
+                    ) {
+                        token = info[i].token;
+                        return true;
+                    }
+                }
+                return false
+            };
+            if (userGood(info)) {
+                console.log('I\'ve sent you the token');
+                response.end(token);
+            } else {
+                console.log('The DB doesn\'t know you');
+                response.end(false);
+            }
+        } else {
+            console.log('The DB doesn\'t exist');
+            response.end(false);
+        }
+    } else {
+        console.log('I\'ve not gotten any data');
+        response.end('You need to send user\'s data');
+    }
+});
+
+app.post('/accesses', (request, response, next) => {
+    if (request.headers.token === token) {
+        console.log('I can show you the content');
+        response.end('Congratulations! You have access to content');
+    } else if (request.headers.token) {
+        console.log('Your token is wrong');
+        response.end('Try again');
+    } else {
+        console.log('I\'ve not gotten the token');
+        response.end('You need to send token');
+    }
+});
+
+app.listen(8080, console.log('Server listening at post at port 8080'));
